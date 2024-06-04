@@ -2,7 +2,7 @@ section	.text
 	[GLOBAL ft_strlen:]
 	
 	ft_strlen:
-			xor rax, rax ;set counter to 0
+		xor rax, rax		;set counter to 0
 
 	.loop:
 		cmp byte [rdi], 0	;check if rdi is 0
