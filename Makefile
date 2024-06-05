@@ -1,10 +1,11 @@
 NAME = libasm.a
-SRCS = ft_strlen.s ft_strcpy.s
+SRCS = ft_strlen.s ft_strcpy.s ft_strcmp.s
 OBJS = $(SRCS:.s=.o)
 
 $(NAME):
 		nasm -felf64 ft_strlen.s
 		nasm -felf64 ft_strcpy.s
+		nasm -felf64 ft_strcmp.s
 		ar rcs $(NAME) $(OBJS)
 
 all: $(NAME) test
