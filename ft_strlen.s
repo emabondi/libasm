@@ -1,5 +1,5 @@
 section	.text
-	[GLOBAL ft_strlen:]
+	global ft_strlen
 	
 	ft_strlen:
 		xor rax, rax		;set counter to 0

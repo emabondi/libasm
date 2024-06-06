@@ -1,5 +1,5 @@
 section	.text
-	[GLOBAL ft_strcmp:]
+	global ft_strcmp
 
 	;ARGS: rdi= s1, rsi= s2
 	

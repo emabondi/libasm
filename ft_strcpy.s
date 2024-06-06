@@ -1,5 +1,5 @@
 section	.text
-	[GLOBAL ft_strcpy:]
+	global ft_strcpy
 
 	;ARGS: rdi= dest, rsi= src
 	
