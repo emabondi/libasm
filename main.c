@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 
 extern size_t	ft_strlen(const char *str);
 extern char*	ft_strcpy(char *dest, const char *src);
@@ -56,17 +57,53 @@ int main(){
 	}
 
 	printf("\n\033[0;33m CHECKING FT_WRITE\033[0m\n");
-	for (int i = 0; str[i] != NULL; i++) {
-		for (int j = -1; j < 4; j++){
-			write(j, "ft_write:", 9);
-			ret1 = ft_write(j, str[i], 15);
-			write(j,"     write:", 11);
-			ret2 = write(j, str[i], 15);
 
-			if (res1 == res2)
-				printf ("\033[0;32m RETURN VALUE OK \033[0m\n");
-			else
-				printf ("\033[0;31m RETURN VALUE KO \033[0m\n");
+    for (int i = 0; str[i] != NULL; i++) {
+		//int p[2]; pipe(p);
+		//close(p[0]);
+		//printf("closedddddd ft_write(%d, \"%s\", 15): ", p[0], str[i]);
+		//ssize_t ret1 = ft_write(p[0], str[i], 15);
+        //int s_errno = errno;
+        //printf("return: %zd, errno: %d\n", ret1, s_errno);
+//
+		//errno = 0;
+//
+        //// Using write
+        //printf("write(%d, \"%s\", 15):    ", p[0], str[i]);
+        //ssize_t ret2 = write(p[0], str[i], 15);
+        //printf("return: %zd, errno: %d\n", ret2, errno);
+//
+        //// Check return values
+        //if (ret1 == ret2 && s_errno == errno)
+        //    printf("\033[0;32m RETURN VALUE OK \033[0m\n");
+        //else
+        //    printf("\033[0;31m RETURN VALUE KO \033[0m\n");
+		//
+		//close(p[1]);
+		//
+//
+        for (int j = -1; j < 4; j++) {
+            int saved_errno;
+
+            // Using ft_write
+            printf("ft_write(%d, \"%s\", 15): ", j, str[i]);
+            ssize_t ret1 = ft_write(j, str[i], 15);
+            saved_errno = errno;
+            printf("return: %zd, errno: %d\n", ret1, saved_errno);
+
+            // Reset errno for the next call
+            errno = 0;
+
+            // Using write
+            printf("write(%d, \"%s\", 15):    ", j, str[i]);
+            ssize_t ret2 = write(j, str[i], 15);
+            printf("return: %zd, errno: %d\n", ret2, errno);
+
+            // Check return values
+            if (ret1 == ret2 && saved_errno == errno)
+                printf("\033[0;32m RETURN VALUE OK \033[0m\n");
+            else
+                printf("\033[0;31m RETURN VALUE KO \033[0m\n");
 		}
 	}
 }
