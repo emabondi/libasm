@@ -18,6 +18,7 @@ clean:
 
 fclean: clean
 		rm test_main $(NAME)
+		rm test_ft_read.txt
 
 re: fclean all
 

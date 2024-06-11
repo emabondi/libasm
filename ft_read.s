@@ -7,7 +7,7 @@ section	.text
 	ft_read:
 		call __errno_location wrt ..plt
 		mov qword [rax], 0				;sets errno to 0
-		mov rax,0						;1 is syscall number for write
+		mov rax,0						;0 is syscall number for read
 		syscall
 		test rax, rax					;check return value of syscall
 		js .error						;jump if signed (negative)

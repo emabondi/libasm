@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 extern size_t	ft_strlen(const char *str);
 extern char*	ft_strcpy(char *dest, const char *src);
 extern int		ft_strcmp(const char *s1, const char *s2);
-ssize_t			ft_write(int fd, const void *buf, size_t count);
+extern ssize_t	ft_write(int fd, const void *buf, size_t count);
+extern ssize_t	ft_read(int fd, void *buf, size_t count);
 
 int main(){
 	const char* str[] = {"Prova prova", "Prova2", "", " ", "\0", "precipitevolissimevolmente", "ggggggmeoli", NULL};
@@ -58,52 +61,94 @@ int main(){
 
 	printf("\n\033[0;33m CHECKING FT_WRITE\033[0m\n");
 
-    for (int i = 0; str[i] != NULL; i++) {
+	for (int i = 0; str[i] != NULL; i++) {
 		//int p[2]; pipe(p);
 		//close(p[0]);
 		//printf("closedddddd ft_write(%d, \"%s\", 15): ", p[0], str[i]);
 		//ssize_t ret1 = ft_write(p[0], str[i], 15);
-        //int s_errno = errno;
-        //printf("return: %zd, errno: %d\n", ret1, s_errno);
+		//int s_errno = errno;
+		//printf("return: %zd, errno: %d\n", ret1, s_errno);
 //
 		//errno = 0;
 //
-        //// Using write
-        //printf("write(%d, \"%s\", 15):    ", p[0], str[i]);
-        //ssize_t ret2 = write(p[0], str[i], 15);
-        //printf("return: %zd, errno: %d\n", ret2, errno);
+		//// Using write
+		//printf("write(%d, \"%s\", 15):    ", p[0], str[i]);
+		//ssize_t ret2 = write(p[0], str[i], 15);
+		//printf("return: %zd, errno: %d\n", ret2, errno);
 //
-        //// Check return values
-        //if (ret1 == ret2 && s_errno == errno)
-        //    printf("\033[0;32m RETURN VALUE OK \033[0m\n");
-        //else
-        //    printf("\033[0;31m RETURN VALUE KO \033[0m\n");
+		//// Check return values
+		//if (ret1 == ret2 && s_errno == errno)
+		//	printf("\033[0;32m RETURN VALUE OK \033[0m\n");
+		//else
+		//	printf("\033[0;31m RETURN VALUE KO \033[0m\n");
 		//
 		//close(p[1]);
 		//
 //
-        for (int j = -1; j < 4; j++) {
-            int saved_errno;
+		for (int j = -1; j < 4; j++) {
+			int saved_errno;
 
-            // Using ft_write
-            printf("ft_write(%d, \"%s\", 15): ", j, str[i]);
-            ssize_t ret1 = ft_write(j, str[i], 15);
-            saved_errno = errno;
-            printf("return: %zd, errno: %d\n", ret1, saved_errno);
+			// Using ft_write
+			printf("ft_write(%d, \"%s\", 15): ", j, str[i]);
+			ssize_t ret1 = ft_write(j, str[i], 15);
+			saved_errno = errno;
+			printf("return: %zd, errno: %d\n", ret1, saved_errno);
 
-            // Reset errno for the next call
-            errno = 0;
+			// Reset errno for the next call
+			errno = 0;
 
-            // Using write
-            printf("write(%d, \"%s\", 15):    ", j, str[i]);
-            ssize_t ret2 = write(j, str[i], 15);
-            printf("return: %zd, errno: %d\n", ret2, errno);
+			// Using write
+			printf("write(%d, \"%s\", 15):    ", j, str[i]);
+			ssize_t ret2 = write(j, str[i], 15);
+			printf("return: %zd, errno: %d\n", ret2, errno);
 
-            // Check return values
-            if (ret1 == ret2 && saved_errno == errno)
-                printf("\033[0;32m RETURN VALUE OK \033[0m\n");
-            else
-                printf("\033[0;31m RETURN VALUE KO \033[0m\n");
+			// Check return values
+			if (ret1 == ret2 && saved_errno == errno)
+				printf("\033[0;32m RETURN VALUE OK \033[0m\n");
+			else
+				printf("\033[0;31m RETURN VALUE KO \033[0m\n");
 		}
 	}
+
+	printf("\n\033[0;33m CHECKING FT_READ\033[0m\n");
+	FILE *fptr;
+	fptr = fopen("test_ft_read.txt", "w");
+	fprintf(fptr, "Testo per il file di prova");
+	fclose(fptr);
+	int f = open("test_ft_read.txt", O_RDONLY);
+	char reader[30];
+	for (int j = -1; j <= f + 2; j++) {
+		if (j == 0 || j == 1 || j == 2 || j == f)
+			continue;
+		int saved_errno;
+
+		// Using ft_read
+		int fd = open("test_ft_read.txt", O_RDONLY);
+		printf("ft_read(%d, reader, 15): ", j);
+		ssize_t ret1 = ft_read(j, reader, 15);
+		saved_errno = errno;
+		printf("return: %zd, errno: %d\n", ret1, saved_errno);
+		if (ret1 > 0)
+			printf("buffer: %s\n", reader);
+		close(fd);
+
+		// Reset errno for the next call
+		errno = 0;
+
+		// Using read
+		fd = open("test_ft_read.txt", O_RDONLY);
+		printf("read(%d, reader, 15):    ", j);
+		ssize_t ret2 = read(j, reader, 15);
+		printf("return: %zd, errno: %d\n", ret2, errno);
+		if (ret1 > 0)
+			printf("buffer: %s\n", reader);
+		close(fd);
+
+		// Check return values
+		if (ret1 == ret2 && saved_errno == errno)
+			printf("\033[0;32m RETURN VALUE OK \033[0m\n");
+		else
+			printf("\033[0;31m RETURN VALUE KO \033[0m\n");
+	}
+	close(f);
 }
