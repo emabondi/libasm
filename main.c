@@ -7,10 +7,11 @@
 #include <fcntl.h>
 
 extern size_t	ft_strlen(const char *str);
-extern char*	ft_strcpy(char *dest, const char *src);
+extern char		*ft_strcpy(char *dest, const char *src);
 extern int		ft_strcmp(const char *s1, const char *s2);
 extern ssize_t	ft_write(int fd, const void *buf, size_t count);
 extern ssize_t	ft_read(int fd, void *buf, size_t count);
+extern char 	*ft_strdup(const char *s);
 
 int main(){
 	const char* str[] = {"Prova prova", "Prova2", "", " ", "\0", "precipitevolissimevolmente", "ggggggmeoli", NULL};
@@ -151,4 +152,17 @@ int main(){
 			printf("\033[0;31m RETURN VALUE KO \033[0m\n");
 	}
 	close(f);
+
+	printf("\n\033[0;33m CHECKING FT_STRDUP\033[0m\n");
+	printf("Word               strdup     strcmp\n");
+	char *dup;
+	for (int i = 0; str[i] != NULL; i++) {
+		dup =	ft_strdup(str[i]);
+		printf("%13.13s  %13.13s   ", str[i], dup);
+		if (!strcmp(str[i], dup))
+			printf ("\033[0;32m OK \033[0m\n");
+		else
+			printf ("\033[0;31m KO \033[0m\n");
+		free(dup);
+	}
 }
